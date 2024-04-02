@@ -1,24 +1,56 @@
-import { TextInput, View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { TextInput, View, StyleSheet, Alert } from "react-native";
 import PrimaryButton from "../components/PrimaryButton";
-import * as Font from 'expo-font';
 
 function StartGameScreen() {
-    return (
+    const [enteredNumber, setEnteredNumber] = useState('');
 
+    // Function to handle changes in the input text
+    function numberInputHandler(enteredText) {
+        setEnteredNumber(enteredText);
+    }
+
+    // Function to reset the input text
+    function resetInputHandler() {
+        setEnteredNumber('');
+    }
+
+    // Function to handle confirming the input
+    function confirmInputHandler() {
+        const chosenNumber = parseInt(enteredNumber);
+        if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+            // Alert the user if the input is invalid
+            Alert.alert('Invalid Number!',
+                'Number must be between 1 and 99',
+                [{ text: 'OK', style: 'destructive', onPress: resetInputHandler }]
+            );
+            return;
+        }
+        console.log('Valid');
+        // Handle valid input here (e.g., navigate to the next screen)
+    }
+
+    return (
         <View style={styles.inputContainer}>
+            {/* Input field for entering the number */}
             <TextInput
                 style={styles.numberInput}
                 maxLength={2}
                 keyboardType="number-pad"
                 autoCapitalize="none"
                 autoCorrect={false}
+                value={enteredNumber}
+                onChangeText={numberInputHandler}
             />
+            {/* Layout for the buttons */}
             <View style={styles.buttonsLayout}>
+                {/* Button to reset the input */}
                 <View style={styles.buttonLayout}>
-                    <PrimaryButton>Reset</PrimaryButton>
+                    <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
                 </View>
+                {/* Button to confirm the input */}
                 <View style={styles.buttonLayout}>
-                    <PrimaryButton>Confirm</PrimaryButton>
+                    <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
                 </View>
             </View>
         </View>
@@ -28,7 +60,6 @@ function StartGameScreen() {
 export default StartGameScreen;
 
 const styles = StyleSheet.create({
-
     inputContainer: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -37,13 +68,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 24,
         backgroundColor: '#223791',
         borderRadius: 8,
-        elevation: 4, //Only for Android
-        shadowColor: 'black', //iOS
+        elevation: 4, // Only for Android
+        shadowColor: 'black', // iOS
         shadowOffset: { width: 2, height: 1 },
         shadowRadius: 6,
         shadowOpacity: 0.6, // iOS end
     },
-
     numberInput: {
         height: 50,
         width: 50,
@@ -58,7 +88,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     buttonLayout: {
-        flex: 1, // Makes the btn to take the full width
+        flex: 1, // Makes the button take the full width
     }
-
 });
